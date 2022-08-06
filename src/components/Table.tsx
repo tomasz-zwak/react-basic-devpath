@@ -4,14 +4,33 @@ import React, { useId, useMemo, useState } from 'react'
 
 import Spinner from './spinner'
 
-const Table = ({ data, loading, columns, onSizeChange }) => {
+const Table = <T extends unknown>({
+  data,
+  loading,
+  columns,
+  size,
+  onSizeChange,
+}: {
+  data: T[]
+  loading: boolean
+  columns: Array<{
+    title: string
+    key: keyof T
+    info?: keyof T
+  }>
+  size: number
+  onSizeChange: (size: number) => void
+}) => {
   const tableSizeOptions = useMemo(() => {
     const sizes: number[] = []
     for (let size = 0; size < 100; size++) sizes.push(size)
     return sizes
   }, [])
 
-  const id = useId()
+  const headerId = useId()
+  const rowId = useId()
+  const cellId = useId()
+  const selectId = useId()
 
   return (
     <>
@@ -19,10 +38,14 @@ const Table = ({ data, loading, columns, onSizeChange }) => {
         Items to show:
       </label>
       <select
+        value={size}
         style={{ marginBottom: '5px' }}
         name="size"
-        id={`size-${id}`}
-        onChange={(e) => onSizeChange(e.target.value)}
+        id={`size-select-${selectId}`}
+        onChange={(e) => {
+          const size = parseInt(e.target.value)
+          onSizeChange(size)
+        }}
       >
         {tableSizeOptions.map((size) => (
           <option key={`beer-size-option-${size}`} value={size}>
@@ -34,16 +57,19 @@ const Table = ({ data, loading, columns, onSizeChange }) => {
       <table>
         <thead>
           <tr>
-            {columns.map(({ title, key }) => (
-              <th key={key}>{title}</th>
+            {columns.map(({ title }) => (
+              <th key={`table-header-cell-${headerId}`}>{title}</th>
             ))}
           </tr>
         </thead>
         <tbody>
           {data.map((dataRow) => (
-            <tr key={dataRow.id}>
-              {columns.map((col, index) => (
-                <TableCell info={dataRow[col.info]} key={index}>
+            <tr key={`table-row-${rowId}`}>
+              {columns.map((col) => (
+                <TableCell
+                  info={col.info ? dataRow[col.info] : null}
+                  key={`table-cell-${cellId}`}
+                >
                   {dataRow[col.key]}
                 </TableCell>
               ))}

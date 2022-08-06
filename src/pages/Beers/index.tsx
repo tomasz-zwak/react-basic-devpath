@@ -1,3 +1,3 @@
-import Beers from './beers'
+import Breweries from './Breweries'
 
-export default Beers
+export default Breweries

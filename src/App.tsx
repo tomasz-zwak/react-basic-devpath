@@ -1,14 +1,17 @@
 import './App.scss'
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import React from 'react'
 
-import Beers from './pages/Beers/beers'
+import Breweries from './pages/Beers'
+
+const queryClient = new QueryClient()
 
 function App() {
   return (
-    <div>
-      <Beers></Beers>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <Breweries />
+    </QueryClientProvider>
   )
 }
 

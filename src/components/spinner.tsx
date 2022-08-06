@@ -12,7 +12,7 @@ const Spinner = ({ size }: { size: 'small' | 'medium' | 'large' }) => {
         '-medium': size === 'medium',
         '-large': size === 'large',
       })}
-    ></div>
+    />
   )
 }
 

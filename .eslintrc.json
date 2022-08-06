@@ -1,6 +1,7 @@
 {
   "parser": "@typescript-eslint/parser",
-  "extends": ["react-app", "prettier", "react-app/jest"],
+  "extends": ["react-app", "prettier", "react-app/jest", "eslint:recommended",
+  "plugin:react/recommended"],
   "plugins": [
     "@typescript-eslint/eslint-plugin",
     "prettier", "import", "simple-import-sort", "unused-imports"],
@@ -15,7 +16,13 @@
     "import/order": "off",
     "simple-import-sort/imports": "error",
     "unused-imports/no-unused-imports": "error",
+    "no-unused-vars": "warn",
     "@typescript-eslint/no-explicit-any": 1,
+    "react/self-closing-comp": ["warn", {
+      "component": true,
+      "html": true
+    }],
+    "react/prop-types": 0,
     "max-lines": [
       "error",
       {
