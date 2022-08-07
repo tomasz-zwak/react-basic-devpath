@@ -22,7 +22,7 @@ client.interceptors.response.use(camelizeKeysInterceptor)
 const request = async <T>(options: AxiosRequestConfig) => {
   const onSuccess = (response: AxiosResponse<T>) => response.data
 
-  const onError = (error) => Promise.reject(error.response)
+  const onError = (error) => Promise.reject(error)
 
   return client(options).then(onSuccess).catch(onError)
 }
@@ -34,5 +34,11 @@ export const breweries = (page = 0, perPage = 10) =>
       per_page: perPage,
     },
     url: '/breweries',
+    method: 'GET',
+  })
+
+export const brewery = (breweryId: Brewery['id']) =>
+  request<Brewery>({
+    url: `/breweries/${breweryId}`,
     method: 'GET',
   })

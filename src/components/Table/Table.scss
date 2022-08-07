@@ -1,0 +1,28 @@
+table, th, td {
+    border: 1px solid;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+
+    td {
+        padding: .5rem;
+   }
+}
+
+.table{
+    &--info-popup{
+        padding: .75rem;
+        text-align: center;
+        border: 1px solid gainsboro;
+        position: fixed;
+        min-width: 5rem;
+        min-height: 8rem;
+        top: 0;
+        left: 0;
+        background-color: white;
+    }
+}
+
+

@@ -1,7 +1,17 @@
 export interface Brewery {
   id: string
   name: string
-  breweryType: string
+  breweryType:
+    | 'micro'
+    | 'nano'
+    | 'regional'
+    | 'brewpub'
+    | 'large'
+    | 'planning'
+    | 'bar'
+    | 'contract'
+    | 'proprietor'
+    | 'closed'
   street: string
   address2?: string
   address3?: string

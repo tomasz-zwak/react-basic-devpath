@@ -1,4 +1,4 @@
-import './beers.scss'
+import './Breweries.scss'
 
 import classNames from 'classnames'
 import Spinner from 'components/spinner'
@@ -8,10 +8,10 @@ import { Brewery } from 'services/types'
 import useBreweries from 'services/use-breweries'
 
 const Breweries = () => {
-  const [size, setSize] = useState(10)
-  const [page, setPage] = useState(0)
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(10)
 
-  const { isLoading, error, data } = useBreweries(page, size)
+  const { isLoading, error, data } = useBreweries(page, pageSize)
 
   if (isLoading) return <Spinner size="small" />
 
@@ -21,10 +21,18 @@ const Breweries = () => {
   return (
     <>
       <Table<Brewery>
-        size={size}
-        onSizeChange={setSize}
         data={data}
         loading={isLoading}
+        pagination={{
+          paginationValues: {
+            page,
+            pageSize,
+          },
+          onPageChange: ({ page, pageSize }) => {
+            setPage(page)
+            setPageSize(pageSize)
+          },
+        }}
         columns={[
           {
             title: 'ID',
