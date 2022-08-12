@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { camelizeKeys } from 'humps'
-import { Brewery } from 'services/types'
+
+import { Brewery } from './brewery.type'
 
 const client = axios.create({
   baseURL: 'https://api.openbrewerydb.org',

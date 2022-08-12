@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
-import { breweries } from 'services/BreweryService'
+
+import { breweries } from './brewery.service'
 
 const useBreweries = (page: number, perPage: number) =>
   useQuery(['breweries', page, perPage], () => breweries(page, perPage), {

@@ -4,8 +4,7 @@ import classNames from 'classnames'
 import Spinner from 'components/spinner'
 import Table from 'components/Table'
 import React, { useState } from 'react'
-import { Brewery } from 'services/types'
-import useBreweries from 'services/use-breweries'
+import useBreweries from 'services/BreweryService'
 
 const Breweries = () => {
   const [page, setPage] = useState(1)
@@ -20,9 +19,10 @@ const Breweries = () => {
 
   return (
     <>
-      <Table<Brewery>
+      <Table
         data={data}
         loading={isLoading}
+        selectable={{ onSelect: (selectedRows) => console.log(selectedRows) }}
         pagination={{
           paginationValues: {
             page,
