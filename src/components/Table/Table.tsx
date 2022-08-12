@@ -3,7 +3,7 @@ import './Table.scss'
 import classNames from 'classnames'
 import Spinner from 'components/spinner'
 import { Flex } from 'layouts/Flex'
-import React, { useId, useMemo, useReducer, useState } from 'react'
+import React, { useEffect, useId, useMemo, useReducer, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 interface TablePagination {
@@ -14,20 +14,6 @@ interface TablePagination {
 interface TablePaginationProps {
   paginationValues?: TablePagination
   onPageChange?: (pagination: TablePagination) => void
-}
-
-interface TableColumnProps<T> {
-  title: string
-  key: keyof T
-  info?: keyof T
-}
-
-interface TableProps<T> {
-  data: T[]
-  loading: boolean
-  rowId?: 'id' | keyof T
-  columns: TableColumnProps<T>[]
-  pagination?: TablePaginationProps
 }
 
 const paginationReducer = (
@@ -109,19 +95,70 @@ const TablePaginationControls: React.FC<{
   )
 }
 
+interface TableColumnProps<T> {
+  title: string
+  key: keyof T
+  info?: keyof T
+  render?: (el: T[keyof T]) => React.ReactNode
+}
+
+interface TableSelectableProps<T> {
+  onSelect: (selectedRows: T[]) => void
+}
+
+interface TableProps<T> {
+  data: T[]
+  loading: boolean
+  rowId?: 'id' | keyof T
+  columns: TableColumnProps<T>[]
+  pagination?: TablePaginationProps
+  selectable?: TableSelectableProps<T>
+}
+
+const tableSelectionReducer = <T extends Record<any, any>>(
+  state: T[],
+  {
+    data,
+    rowId,
+    action,
+  }: { data: T; rowId: TableProps<T>['rowId']; action: 'ADD' | 'REMOVE' }
+) => {
+  if (action === 'ADD') return [...state, data]
+  if (action === 'REMOVE') {
+    const index = state.findIndex((rowData) => rowData[rowId] === data[rowId])
+    const newState = [...state]
+    newState.splice(index, 1)
+    return newState
+  }
+
+  return state
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Table = <T extends Record<any, any>>({
   data,
   loading,
   columns,
   rowId = 'id',
   pagination,
+  selectable,
 }: TableProps<T>) => {
+  const [selectedRows, dispatchSelectionChange] = useReducer(
+    tableSelectionReducer,
+    []
+  )
+
+  useEffect(() => {
+    if (selectable?.onSelect) selectable.onSelect(selectedRows)
+  }, [selectable, selectedRows])
+
   return (
     <>
       {loading && <Spinner size="medium" />}
       <table>
         <thead>
           <tr>
+            {selectable && <th />}
             {columns.map(({ title }) => (
               <th key={`table-header-cell-${title}`}>{title}</th>
             ))}
@@ -130,12 +167,40 @@ const Table = <T extends Record<any, any>>({
         <tbody>
           {data.map((dataRow) => (
             <tr key={`table-row-${dataRow[rowId]}`}>
+              {selectable && (
+                <td>
+                  <input
+                    type="checkbox"
+                    value={dataRow[rowId]}
+                    onChange={(e) => {
+                      const selectedRowId = e.target.value
+                      const selectedRowData = data.find(
+                        (dataRow) => dataRow[rowId] === selectedRowId
+                      )
+                      if (!selectedRowData) return
+                      if (e.target.checked)
+                        dispatchSelectionChange({
+                          data: selectedRowData,
+                          rowId,
+                          action: 'ADD',
+                        })
+
+                      if (!e.target.checked)
+                        dispatchSelectionChange({
+                          data: selectedRowData,
+                          rowId,
+                          action: 'REMOVE',
+                        })
+                    }}
+                  />
+                </td>
+              )}
               {columns.map((col) => (
                 <TableCell
                   info={col.info ? dataRow[col.info] : null}
                   key={`table-cell-${dataRow[col.key]}`}
                 >
-                  {dataRow[col.key]}
+                  {col.render ? col.render(dataRow[col.key]) : dataRow[col.key]}
                 </TableCell>
               ))}
             </tr>
