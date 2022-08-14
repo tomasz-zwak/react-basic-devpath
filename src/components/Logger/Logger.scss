@@ -1,5 +1,5 @@
 .logger{
-    width: 20em;
+    width: 30em;
     height: 40em;
     background-color: white;
     top: 0;
@@ -7,4 +7,11 @@
     position: fixed;
     border: 1px solid black;
     overflow: auto;
+    margin: 1em;
+    padding: .25em;
+
+    &.-message{
+      display: inline-block; 
+      padding-bottom: .25em; 
+    }
 }
