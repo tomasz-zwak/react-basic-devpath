@@ -13,6 +13,7 @@ const Input: React.FC<Props> = ({ label, ...props }) => {
   return (
     <div>
       <label htmlFor={id}>{label}</label>
+      <br />
       <input type="text" id={id} {...props} />
     </div>
   )

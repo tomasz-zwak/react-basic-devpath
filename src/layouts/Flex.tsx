@@ -1,3 +1,5 @@
+import './Flex.scss'
+
 import classNames from 'classnames'
 import React, { ReactNode } from 'react'
 

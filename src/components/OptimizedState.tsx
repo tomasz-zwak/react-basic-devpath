@@ -13,12 +13,15 @@ const OptimizedState = () => {
   }, [calculation])
 
   return (
-    <Input
-      defaultValue={calculation}
-      label="Optimized State"
-      style={{ width: '5em' }}
-      onChange={(e) => setCalculation(e.target.value)}
-    />
+    <div>
+      <p>Optimized State</p>
+      <Input
+        defaultValue={calculation}
+        label="state value"
+        style={{ width: '5em' }}
+        onChange={(e) => setCalculation(e.target.value)}
+      />
+    </div>
   )
 }
 

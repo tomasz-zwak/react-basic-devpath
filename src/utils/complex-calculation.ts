@@ -10,8 +10,6 @@ const complexCalculation = (length: number = 30000000) => {
 
   console.timeEnd(CALC_LABEL)
 
-  console.log(resultItems)
-
   return resultItems.join('')
 }
 
