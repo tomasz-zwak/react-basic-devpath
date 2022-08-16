@@ -99,7 +99,7 @@ interface TableColumnProps<T> {
   title: string
   key: keyof T
   info?: keyof T
-  render?: (el: T[keyof T]) => React.ReactNode
+  render?: (dataRow: T) => React.ReactNode
 }
 
 interface TableSelectableProps<T> {
@@ -200,7 +200,7 @@ const Table = <T extends Record<any, any>>({
                   info={col.info ? dataRow[col.info] : null}
                   key={`table-cell-${dataRow[col.key]}`}
                 >
-                  {col.render ? col.render(dataRow[col.key]) : dataRow[col.key]}
+                  {col.render ? col.render(dataRow) : dataRow[col.key]}
                 </TableCell>
               ))}
             </tr>

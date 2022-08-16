@@ -1,5 +1,5 @@
 import useCheckboxHandler from 'hooks/use-checkbox'
-import React, { useId } from 'react'
+import React, { ChangeEvent, useId } from 'react'
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -7,20 +7,26 @@ interface Props
     HTMLInputElement
   > {
   label?: string
-  onChecked?: () => void
-  onUnchecked?: () => void
+  onChecked?: (e?: ChangeEvent<HTMLInputElement>) => void
+  onUnchecked?: (e?: ChangeEvent<HTMLInputElement>) => void
 }
 
-const Checkbox: React.FC<Props> = ({ label, onChecked, onUnchecked }) => {
+const Checkbox: React.FC<Props> = ({
+  label,
+  onChecked,
+  onUnchecked,
+  ...props
+}) => {
   const id = useId()
   const checkboxHandler = useCheckboxHandler()
   return (
     <>
       <label htmlFor={id}>{label}</label>
       <input
+        {...props}
+        onChange={checkboxHandler({ onChecked, onUnchecked })}
         type="checkbox"
         id={id}
-        onChange={checkboxHandler({ onChecked, onUnchecked })}
       />
     </>
   )

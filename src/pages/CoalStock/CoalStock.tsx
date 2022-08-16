@@ -28,9 +28,9 @@ const CoalStocks = () => {
           {
             title: 'Availability',
             key: 'stockStatus',
-            render: (el) => (
-              <span style={{ color: el ? 'green' : 'red' }}>
-                {el ? 'Available' : 'Out of stock'}
+            render: ({ stockStatus }) => (
+              <span style={{ color: stockStatus ? 'green' : 'red' }}>
+                {stockStatus ? 'Available' : 'Out of stock'}
               </span>
             ),
           },

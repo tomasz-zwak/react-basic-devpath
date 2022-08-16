@@ -1,5 +1,6 @@
 import './Breweries.scss'
 
+import { Link, Outlet } from '@tanstack/react-location'
 import classNames from 'classnames'
 import Spinner from 'components/spinner'
 import Table from 'components/Table'
@@ -35,12 +36,9 @@ const Breweries = () => {
         }}
         columns={[
           {
-            title: 'ID',
-            key: 'id',
-          },
-          {
             title: 'Name',
             key: 'name',
+            render: ({ id, name }) => <Link to={id}>{name}</Link>,
           },
           {
             title: 'Brewery Type',
@@ -53,6 +51,7 @@ const Breweries = () => {
           },
         ]}
       />
+      <Outlet />
     </>
   )
 }

@@ -1,37 +1,48 @@
 import './App.scss'
 
+import { Link, Outlet, ReactLocation, Router } from '@tanstack/react-location'
+import { ReactLocationDevtools } from '@tanstack/react-location-devtools'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import Checkbox from 'components/Checkbox'
 import Logger from 'components/Logger/Logger'
 import LoggerContextProvider from 'components/Logger/LoggerContext'
-import CoalStocks from 'pages/CoalStock/CoalStock'
-import Examples from 'pages/Examples'
-import React, { useState } from 'react'
+import React from 'react'
+import { routes } from 'routes'
 
-import Breweries from './pages/Breweries'
+const Header = () => {
+  return (
+    <nav>
+      <ul>
+        <li>
+          <Link to={'/'}>Home</Link>
+        </li>
+        <li>
+          <Link to={'/breweries'}>Breweries</Link>
+        </li>
+        <li>
+          <Link to={'/coalStocks'}>Coal Stocks</Link>
+        </li>
+        <li>
+          <Link to={'/examples'}>Examples</Link>
+        </li>
+      </ul>
+    </nav>
+  )
+}
 
 const queryClient = new QueryClient()
+const location = new ReactLocation()
 
 function App() {
-  const [isLoggerVisible, setLoggerVisible] = useState(false)
-
   return (
     <QueryClientProvider client={queryClient}>
-      <Checkbox
-        label="Show logger"
-        onChecked={() => setLoggerVisible(true)}
-        onUnchecked={() => setLoggerVisible(false)}
-      />
-      <hr />
-      <LoggerContextProvider>
-        <Examples />
-        <hr />
-        <Breweries />
-        <hr />
-        <CoalStocks />
-        <hr />
-        {isLoggerVisible && <Logger />}
-      </LoggerContextProvider>
+      <Router location={location} routes={routes}>
+        <LoggerContextProvider>
+          <Header />
+          <Outlet />
+          <Logger />
+        </LoggerContextProvider>
+        <ReactLocationDevtools initialIsOpen={false} />
+      </Router>
     </QueryClientProvider>
   )
 }
