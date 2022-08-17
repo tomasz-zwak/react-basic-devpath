@@ -2,6 +2,7 @@ import Checkbox from 'components/Checkbox'
 import Divider from 'components/Divider'
 import MemoExample from 'components/MemoExample'
 import OptimizedState from 'components/OptimizedState'
+import RedirectEffect from 'components/RedirectEffect'
 import StaleClosure from 'components/StaleClosure'
 import { DEFAULT_EXAMPLE_STATE } from 'constants/default-example-state'
 import { Flex } from 'layouts/Flex'
@@ -15,6 +16,10 @@ const Examples = () => {
     DEFAULT_EXAMPLE_STATE
   )
   const [isMemoExampleEnabled, setMemoExampleEnabled] = useState(
+    DEFAULT_EXAMPLE_STATE
+  )
+
+  const [isRedirectEffectEnabled, setRedirectEffectEnabled] = useState(
     DEFAULT_EXAMPLE_STATE
   )
 
@@ -34,6 +39,11 @@ const Examples = () => {
         label="Memo Example"
         onChecked={() => setMemoExampleEnabled(true)}
         onUnchecked={() => setMemoExampleEnabled(false)}
+      />
+      <Checkbox
+        label="Redirect effect"
+        onChecked={() => setRedirectEffectEnabled(true)}
+        onUnchecked={() => setRedirectEffectEnabled(false)}
       />
       <hr />
       <Flex
@@ -56,7 +66,18 @@ const Examples = () => {
             <Divider />
           </>
         )}
-        {isMemoExampleEnabled && <MemoExample />}
+        {isMemoExampleEnabled && (
+          <>
+            <MemoExample />
+            <Divider />
+          </>
+        )}
+        {isRedirectEffectEnabled && (
+          <>
+            <RedirectEffect />
+            <Divider />
+          </>
+        )}
       </Flex>
     </>
   )
