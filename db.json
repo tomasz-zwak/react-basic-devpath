@@ -1,0 +1,28 @@
+{
+  "users": [
+    {
+      "name": "test",
+      "age": "31",
+      "email": "t.zwak@selleo.com",
+      "id": 1
+    },
+    {
+      "name": "test",
+      "age": "31",
+      "email": "t.zwak@selleo.com",
+      "id": 2
+    },
+    {
+      "name": "test",
+      "age": "31",
+      "email": "t.zwak@selleo.com",
+      "id": 3
+    },
+    {
+      "name": "test",
+      "age": "31",
+      "email": "t.zwak@selleo.com",
+      "id": 4
+    }
+  ]
+}

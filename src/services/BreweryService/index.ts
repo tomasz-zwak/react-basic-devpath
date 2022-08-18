@@ -1,3 +1,3 @@
-import useBreweries from './use-breweries'
+import useBreweries from './breweries.hooks'
 
 export default useBreweries

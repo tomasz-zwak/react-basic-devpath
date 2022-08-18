@@ -2,7 +2,7 @@ import classNames from 'classnames'
 import Spinner from 'components/spinner'
 import Table from 'components/Table'
 import React from 'react'
-import useCoalStocks from 'services/CoalStockService/use-coal-stock'
+import useCoalStocks from 'services/CoalStockService/coal-stock.hooks'
 
 const CoalStocks = () => {
   const { isLoading, error, data: coalStock } = useCoalStocks()

@@ -3,6 +3,7 @@ import './App.scss'
 import { Link, Outlet, ReactLocation, Router } from '@tanstack/react-location'
 import { ReactLocationDevtools } from '@tanstack/react-location-devtools'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import Logger from 'components/Logger/Logger'
 import LoggerContextProvider from 'components/Logger/LoggerContext'
 import React from 'react'
@@ -24,6 +25,9 @@ const Header = () => {
         <li>
           <Link to={'/examples'}>Examples</Link>
         </li>
+        <li>
+          <Link to={'/users'}>Users</Link>
+        </li>
       </ul>
     </nav>
   )
@@ -43,6 +47,7 @@ function App() {
         </LoggerContextProvider>
         <ReactLocationDevtools initialIsOpen={false} />
       </Router>
+      <ReactQueryDevtools />
     </QueryClientProvider>
   )
 }

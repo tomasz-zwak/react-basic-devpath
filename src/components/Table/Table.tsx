@@ -195,10 +195,10 @@ const Table = <T extends Record<any, any>>({
                   />
                 </td>
               )}
-              {columns.map((col) => (
+              {columns.map((col, index) => (
                 <TableCell
                   info={col.info ? dataRow[col.info] : null}
-                  key={`table-cell-${dataRow[col.key]}`}
+                  key={`table-cell-${index}`}
                 >
                   {col.render ? col.render(dataRow) : dataRow[col.key]}
                 </TableCell>
