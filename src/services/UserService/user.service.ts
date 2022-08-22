@@ -40,7 +40,7 @@ export const userUpdate = (
 ) =>
   request<User>({
     url: `/users/${id}`,
-    method: 'PATCH',
+    method: 'PUT',
     data: userUpdateDto,
   })
 

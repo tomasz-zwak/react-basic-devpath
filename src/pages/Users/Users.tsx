@@ -1,6 +1,16 @@
+import './Users.scss'
+
 import { useQueryClient } from '@tanstack/react-query'
 import Table from 'components/Table'
-import { Field, Form, Formik, FormikProps, FormikValues } from 'formik'
+import {
+  Field,
+  FieldArray,
+  Form,
+  Formik,
+  FormikProps,
+  FormikValues,
+  getIn,
+} from 'formik'
 import { Flex } from 'layouts/Flex'
 import React, { useEffect, useRef, useState } from 'react'
 import { UserCreateDto } from 'services/UserService/user.dto'
@@ -58,18 +68,33 @@ const Users = () => {
           },
           { key: 'age', title: 'Age' },
           { key: 'email', title: 'Email' },
+          {
+            key: 'photos',
+            title: 'Photos',
+            render: ({ photos }) =>
+              photos && (
+                <ol>
+                  {photos.map(({ title, url }, index) => (
+                    <li key={index}>
+                      <a href={url}>{title}</a>
+                    </li>
+                  ))}
+                </ol>
+              ),
+          },
         ]}
       />
-      <UserForm user={selectedUser} />
+      <UserForm user={selectedUser} onReset={handleReset} />
     </>
   )
 }
 
 interface Props {
   user?: User
+  onReset: () => void
 }
 
-const UserForm: React.FC<Props> = ({ user }) => {
+const UserForm: React.FC<Props> = ({ user, onReset }) => {
   const { mutate: createUser } = useUserCreate()
   const { mutate: updateUser } = useUserUpdate()
 
@@ -82,10 +107,20 @@ const UserForm: React.FC<Props> = ({ user }) => {
     if (!user) formikRef.current?.resetForm()
   }, [user])
 
+  const initialValues = { name: '', age: '', email: '', photos: [] }
+
+  const handleSuccess = () => {
+    queryCache.invalidateQueries(['users'])
+    onReset()
+    formikRef.current?.resetForm({
+      values: initialValues,
+    })
+  }
+
   return (
     <Formik
       innerRef={formikRef}
-      initialValues={{ ...user } || {}}
+      initialValues={initialValues}
       validationSchema={Yup.object().shape({
         name: user
           ? Yup.string().optional()
@@ -96,25 +131,31 @@ const UserForm: React.FC<Props> = ({ user }) => {
         email: user
           ? Yup.string().email().optional()
           : Yup.string().email().required('Required'),
+        photos: Yup.array()
+          .of(
+            Yup.object().shape({
+              title: Yup.string()
+                .min(3, 'Title must be at least 3 characters.')
+                .required('Required'),
+              url: Yup.string().url('Must be an url').required('Required'),
+            })
+          )
+          .optional(),
       })}
       onSubmit={(values) => {
         if (!user)
           return createUser(values as UserCreateDto, {
-            onSuccess: () => {
-              queryCache.invalidateQueries(['users'])
-            },
+            onSuccess: handleSuccess,
           })
         updateUser(
           { id: user.id, ...values },
           {
-            onSuccess: () => {
-              queryCache.invalidateQueries(['users'])
-            },
+            onSuccess: handleSuccess,
           }
         )
       }}
     >
-      {({errors, touched }) => {
+      {({ values }) => {
         return (
           <Form>
             <Flex
@@ -125,27 +166,82 @@ const UserForm: React.FC<Props> = ({ user }) => {
                 flexDirection: 'column',
                 alignItems: 'flex-start',
                 width: 'fit-content',
+                color: 'gray',
               }}
             >
               <label htmlFor="name">Name</label>
               <Field id="name" name="name" />
-              {errors.name && touched.name ? (
-                <div>{errors.name.toString()}</div>
-              ) : null}
+              <ErrorMessage name="name" />
 
               <label htmlFor="age">Age</label>
               <Field id="age" name="age" />
-              {errors.age && touched.age ? (
-                <div>{errors.age.toString()}</div>
-              ) : null}
+              <ErrorMessage name="age" />
 
               <label htmlFor="email">Email</label>
               <Field id="email" name="email" type="email" />
-              {errors.email && touched.email ? (
-                <div>{errors.email.toString()}</div>
-              ) : null}
+              <ErrorMessage name="email" />
 
-              <button type="submit">
+              <FieldArray
+                name="photos"
+                render={(props) => (
+                  <div>
+                    <div style={{ color: 'initial' }}>Photos: </div>
+                    {values.photos && values.photos.length > 0 ? (
+                      values.photos.map((_, index) => (
+                        <React.Fragment key={index}>
+                          <hr />
+                          <Flex
+                            style={{
+                              flexDirection: 'column',
+                              alignItems: 'flex-start',
+                              width: 'fit-content',
+                              color: 'gray',
+                            }}
+                            key={index}
+                          >
+                            <label htmlFor={`photos.${index}.title`}>
+                              Title
+                            </label>
+                            <Field name={`photos.${index}.title`} />
+                            <ErrorMessage name={`photos.${index}.title`} />
+
+                            <label htmlFor={`photos.${index}.url`}>URL</label>
+                            <Field name={`photos.${index}.url`} />
+                            <ErrorMessage name={`photos.${index}.url`} />
+
+                            <div>
+                              <button
+                                type="button"
+                                onClick={() => props.remove(index)}
+                              >
+                                -
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  props.insert(index, { title: '', url: '' })
+                                }
+                              >
+                                +
+                              </button>
+                            </div>
+                          </Flex>
+                        </React.Fragment>
+                      ))
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => props.push({ title: '', url: '' })}
+                        style={{ marginTop: 5 }}
+                      >
+                        Add a photo
+                      </button>
+                    )}
+                  </div>
+                )}
+              />
+
+              <button type="submit" style={{ marginTop: 5 }}>
                 {user ? 'Update user' : 'Create user'}
               </button>
             </Flex>
@@ -155,5 +251,18 @@ const UserForm: React.FC<Props> = ({ user }) => {
     </Formik>
   )
 }
+
+const ErrorMessage = ({ name }) => (
+  <Field
+    name={name}
+    render={({ form }) => {
+      const error = getIn(form.errors, name)
+      const touch = getIn(form.touched, name)
+      return touch && error ? (
+        <small className="form--error">{error}</small>
+      ) : null
+    }}
+  />
+)
 
 export default Users
