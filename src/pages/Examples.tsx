@@ -66,12 +66,14 @@ const Examples = () => {
             <Divider />
           </>
         )}
+
         {isMemoExampleEnabled && (
           <>
             <MemoExample />
             <Divider />
           </>
         )}
+
         {isRedirectEffectEnabled && (
           <>
             <RedirectEffect />

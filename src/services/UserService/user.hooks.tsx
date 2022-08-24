@@ -9,7 +9,7 @@ import {
 } from 'services/UserService/user.service'
 import { User } from 'services/UserService/user.type'
 
-const useUsers = () => useQuery(['users'], () => users(), { enabled: true })
+const useUsers = () => useQuery(['users'], () => users())
 
 const useUser = (id: User['id']) => useQuery(['user', id], () => user(id))
 

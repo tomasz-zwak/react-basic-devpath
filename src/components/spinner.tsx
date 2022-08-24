@@ -6,6 +6,7 @@ import React from 'react'
 const Spinner = ({ size }: { size: 'small' | 'medium' | 'large' }) => {
   return (
     <div
+      role={'progressbar'}
       className={classNames({
         loader: true,
         '-small': size === 'small',

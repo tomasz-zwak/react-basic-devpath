@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { UserCreateDto } from 'services/UserService/user.dto'
 import { User } from 'services/UserService/user.type'
 
-const client = axios.create({
+export const client = axios.create({
   baseURL: 'http://localhost:4000',
   headers: { 'content-type': 'application/json' },
 })

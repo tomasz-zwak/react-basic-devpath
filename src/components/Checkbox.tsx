@@ -26,6 +26,7 @@ const Checkbox: React.FC<Props> = ({
         {...props}
         onChange={checkboxHandler({ onChecked, onUnchecked })}
         type="checkbox"
+        name={label}
         id={id}
       />
     </>

@@ -1,6 +1,8 @@
 import './Users.scss'
 
 import { useQueryClient } from '@tanstack/react-query'
+import classNames from 'classnames'
+import Spinner from 'components/spinner'
 import Table from 'components/Table'
 import {
   Field,
@@ -24,8 +26,7 @@ import { User } from 'services/UserService/user.type'
 import * as Yup from 'yup'
 
 const Users = () => {
-  const { data, isLoading } = useUsers()
-
+  const { data, isLoading, error } = useUsers()
   const [selectedUser, setSelectedUser] = useState<User>()
 
   const { mutate: deleteUser } = useUserDelete()
@@ -36,7 +37,12 @@ const Users = () => {
     setSelectedUser(undefined)
   }
 
-  if (!data) return null
+  if (isLoading) return <Spinner size="small" />
+
+  if (!data || error)
+    return <p className={classNames({ error })}>{JSON.stringify(error)}</p>
+
+  console.log(data)
 
   return (
     <>

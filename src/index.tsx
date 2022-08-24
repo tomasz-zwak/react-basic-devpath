@@ -6,6 +6,13 @@ import ReactDOM from 'react-dom/client'
 
 import reportWebVitals from './reportWebVitals'
 
+console.log(process.env.NODE_ENV)
+// MSW - Browser, uncomment to enable
+// if (process.env.NODE_ENV === 'development') {
+//   const { worker } = require('./mocks/browser')
+//   worker.start()
+// }
+
 const root = ReactDOM.createRoot(document.getElementById('root')!)
 root.render(
   <React.StrictMode>

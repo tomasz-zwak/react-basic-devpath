@@ -31,7 +31,7 @@ const StaleClosure = () => {
   }, [count, fixed])
 
   return (
-    <div>
+    <div data-testid="staleClosureContainer">
       <p>Stale Closure</p>
       <Checkbox
         label="Fixed"
