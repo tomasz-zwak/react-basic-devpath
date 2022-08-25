@@ -14,7 +14,9 @@ const useUsers = () => useQuery(['users'], () => users())
 const useUser = (id: User['id']) => useQuery(['user', id], () => user(id))
 
 const useUserCreate = () =>
-  useMutation((userCreateDto: UserCreateDto) => userCreate(userCreateDto))
+  useMutation((userCreateDto: UserCreateDto) => userCreate(userCreateDto), {
+    retry: 2,
+  })
 
 const useUserUpdate = () =>
   useMutation(({ id, ...userUpdateDto }: UserUpdateDto) =>

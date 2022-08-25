@@ -15,6 +15,7 @@ import {
 } from 'formik'
 import { Flex } from 'layouts/Flex'
 import React, { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { UserCreateDto } from 'services/UserService/user.dto'
 import {
   useUserCreate,
@@ -101,8 +102,8 @@ interface Props {
 }
 
 const UserForm: React.FC<Props> = ({ user, onReset }) => {
-  const { mutate: createUser } = useUserCreate()
-  const { mutate: updateUser } = useUserUpdate()
+  const { mutate: createUser, isLoading: creating } = useUserCreate()
+  const { mutate: updateUser, isLoading: updating } = useUserUpdate()
 
   const queryCache = useQueryClient()
 
@@ -124,137 +125,140 @@ const UserForm: React.FC<Props> = ({ user, onReset }) => {
   }
 
   return (
-    <Formik
-      innerRef={formikRef}
-      initialValues={initialValues}
-      validationSchema={Yup.object().shape({
-        name: user
-          ? Yup.string().optional()
-          : Yup.string().required('Required'),
-        age: user
-          ? Yup.number().min(1).max(100).optional()
-          : Yup.number().min(1).max(100).required('Required'),
-        email: user
-          ? Yup.string().email().optional()
-          : Yup.string().email().required('Required'),
-        photos: Yup.array()
-          .of(
-            Yup.object().shape({
-              title: Yup.string()
-                .min(3, 'Title must be at least 3 characters.')
-                .required('Required'),
-              url: Yup.string().url('Must be an url').required('Required'),
+    <>
+      <Formik
+        innerRef={formikRef}
+        initialValues={initialValues}
+        validationSchema={Yup.object().shape({
+          name: user
+            ? Yup.string().optional()
+            : Yup.string().required('Required'),
+          age: user
+            ? Yup.number().min(1).max(100).optional()
+            : Yup.number().min(1).max(100).required('Required'),
+          email: user
+            ? Yup.string().email().optional()
+            : Yup.string().email().required('Required'),
+          photos: Yup.array()
+            .of(
+              Yup.object().shape({
+                title: Yup.string()
+                  .min(3, 'Title must be at least 3 characters.')
+                  .required('Required'),
+                url: Yup.string().url('Must be an url').required('Required'),
+              })
+            )
+            .optional(),
+        })}
+        onSubmit={(values) => {
+          if (!user)
+            return createUser(values as UserCreateDto, {
+              onSuccess: handleSuccess,
             })
+          updateUser(
+            { id: user.id, ...values },
+            {
+              onSuccess: handleSuccess,
+            }
           )
-          .optional(),
-      })}
-      onSubmit={(values) => {
-        if (!user)
-          return createUser(values as UserCreateDto, {
-            onSuccess: handleSuccess,
-          })
-        updateUser(
-          { id: user.id, ...values },
-          {
-            onSuccess: handleSuccess,
-          }
-        )
-      }}
-    >
-      {({ values }) => {
-        return (
-          <Form>
-            <Flex
-              style={{
-                border: '1px solid black',
-                margin: 5,
-                padding: 5,
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                width: 'fit-content',
-                color: 'gray',
-              }}
-            >
-              <label htmlFor="name">Name</label>
-              <Field id="name" name="name" />
-              <ErrorMessage name="name" />
+        }}
+      >
+        {({ values }) => {
+          return (
+            <Form>
+              <Flex
+                style={{
+                  border: '1px solid black',
+                  margin: 5,
+                  padding: 5,
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                  width: 'fit-content',
+                  color: 'gray',
+                }}
+              >
+                <label htmlFor="name">Name</label>
+                <Field id="name" name="name" />
+                <ErrorMessage name="name" />
 
-              <label htmlFor="age">Age</label>
-              <Field id="age" name="age" />
-              <ErrorMessage name="age" />
+                <label htmlFor="age">Age</label>
+                <Field id="age" name="age" />
+                <ErrorMessage name="age" />
 
-              <label htmlFor="email">Email</label>
-              <Field id="email" name="email" type="email" />
-              <ErrorMessage name="email" />
+                <label htmlFor="email">Email</label>
+                <Field id="email" name="email" type="email" />
+                <ErrorMessage name="email" />
 
-              <FieldArray
-                name="photos"
-                render={(props) => (
-                  <div>
-                    <div style={{ color: 'initial' }}>Photos: </div>
-                    {values.photos && values.photos.length > 0 ? (
-                      values.photos.map((_, index) => (
-                        <React.Fragment key={index}>
-                          <hr />
-                          <Flex
-                            style={{
-                              flexDirection: 'column',
-                              alignItems: 'flex-start',
-                              width: 'fit-content',
-                              color: 'gray',
-                            }}
-                            key={index}
-                          >
-                            <label htmlFor={`photos.${index}.title`}>
-                              Title
-                            </label>
-                            <Field name={`photos.${index}.title`} />
-                            <ErrorMessage name={`photos.${index}.title`} />
+                <FieldArray
+                  name="photos"
+                  render={(props) => (
+                    <div>
+                      <div style={{ color: 'initial' }}>Photos: </div>
+                      {values.photos && values.photos.length > 0 ? (
+                        values.photos.map((_, index) => (
+                          <React.Fragment key={index}>
+                            <hr />
+                            <Flex
+                              style={{
+                                flexDirection: 'column',
+                                alignItems: 'flex-start',
+                                width: 'fit-content',
+                                color: 'gray',
+                              }}
+                              key={index}
+                            >
+                              <label htmlFor={`photos.${index}.title`}>
+                                Title
+                              </label>
+                              <Field name={`photos.${index}.title`} />
+                              <ErrorMessage name={`photos.${index}.title`} />
 
-                            <label htmlFor={`photos.${index}.url`}>URL</label>
-                            <Field name={`photos.${index}.url`} />
-                            <ErrorMessage name={`photos.${index}.url`} />
+                              <label htmlFor={`photos.${index}.url`}>URL</label>
+                              <Field name={`photos.${index}.url`} />
+                              <ErrorMessage name={`photos.${index}.url`} />
 
-                            <div>
-                              <button
-                                type="button"
-                                onClick={() => props.remove(index)}
-                              >
-                                -
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  props.insert(index, { title: '', url: '' })
-                                }
-                              >
-                                +
-                              </button>
-                            </div>
-                          </Flex>
-                        </React.Fragment>
-                      ))
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => props.push({ title: '', url: '' })}
-                        style={{ marginTop: 5 }}
-                      >
-                        Add a photo
-                      </button>
-                    )}
-                  </div>
-                )}
-              />
+                              <div>
+                                <button
+                                  type="button"
+                                  onClick={() => props.remove(index)}
+                                >
+                                  -
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    props.insert(index, { title: '', url: '' })
+                                  }
+                                >
+                                  +
+                                </button>
+                              </div>
+                            </Flex>
+                          </React.Fragment>
+                        ))
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => props.push({ title: '', url: '' })}
+                          style={{ marginTop: 5 }}
+                        >
+                          Add a photo
+                        </button>
+                      )}
+                    </div>
+                  )}
+                />
 
-              <button type="submit" style={{ marginTop: 5 }}>
-                {user ? 'Update user' : 'Create user'}
-              </button>
-            </Flex>
-          </Form>
-        )
-      }}
-    </Formik>
+                <button type="submit" style={{ marginTop: 5 }}>
+                  {user ? 'Update user' : 'Create user'}
+                </button>
+              </Flex>
+            </Form>
+          )
+        }}
+      </Formik>
+      <LoadingIndicator visible={creating || updating} />
+    </>
   )
 }
 
@@ -270,5 +274,15 @@ const ErrorMessage = ({ name }) => (
     }}
   />
 )
+
+const LoadingIndicator = ({ visible }) => {
+  if (!visible) return null
+  return createPortal(
+    <div style={{ position: 'fixed', top: 5, right: 5 }}>
+      <Spinner size="small" />
+    </div>,
+    document.body
+  )
+}
 
 export default Users

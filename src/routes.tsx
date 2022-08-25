@@ -1,5 +1,6 @@
 import { Route } from '@tanstack/react-location'
 import Breweries from 'pages/Breweries'
+import Breweries2 from 'pages/Breweries/Breweries2'
 import Brewery from 'pages/Breweries/Brewery'
 import CoalStocks from 'pages/CoalStock/CoalStock'
 import Examples from 'pages/Examples'
@@ -21,6 +22,10 @@ export const routes: Route[] = [
         element: <Brewery />,
       },
     ],
+  },
+  {
+    path: 'breweries2',
+    element: <Breweries2 />,
   },
   {
     path: 'coalStocks',
