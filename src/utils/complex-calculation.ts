@@ -1,8 +1,7 @@
 import randomChar from 'utils/random-char'
 
-const CALC_LABEL = 'ComplexCalculation'
-
-const complexCalculation = (length: number = 30000000) => {
+const complexCalculation = (source: string, length: number = 30000000) => {
+  const CALC_LABEL = `ComplexCalculation, source: ${source}`
   console.time(CALC_LABEL)
   const resultItems: string[] = []
 

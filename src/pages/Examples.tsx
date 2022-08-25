@@ -25,26 +25,28 @@ const Examples = () => {
 
   return (
     <>
-      <Checkbox
-        label="Stale Closure"
-        onChecked={() => setStaleClosureEnabled(true)}
-        onUnchecked={() => setStaleClosureEnabled(false)}
-      />
-      <Checkbox
-        label="Optimized State"
-        onChecked={() => setOptimizedStateEnabled(true)}
-        onUnchecked={() => setOptimizedStateEnabled(false)}
-      />
-      <Checkbox
-        label="Memo Example"
-        onChecked={() => setMemoExampleEnabled(true)}
-        onUnchecked={() => setMemoExampleEnabled(false)}
-      />
-      <Checkbox
-        label="Redirect effect"
-        onChecked={() => setRedirectEffectEnabled(true)}
-        onUnchecked={() => setRedirectEffectEnabled(false)}
-      />
+      <Flex style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+        <Checkbox
+          label="Stale Closure"
+          onChecked={() => setStaleClosureEnabled(true)}
+          onUnchecked={() => setStaleClosureEnabled(false)}
+        />
+        <Checkbox
+          label="Optimized State"
+          onChecked={() => setOptimizedStateEnabled(true)}
+          onUnchecked={() => setOptimizedStateEnabled(false)}
+        />
+        <Checkbox
+          label="Memo Example"
+          onChecked={() => setMemoExampleEnabled(true)}
+          onUnchecked={() => setMemoExampleEnabled(false)}
+        />
+        <Checkbox
+          label="Redirect effect"
+          onChecked={() => setRedirectEffectEnabled(true)}
+          onUnchecked={() => setRedirectEffectEnabled(false)}
+        />
+      </Flex>
       <hr />
       <Flex
         style={{

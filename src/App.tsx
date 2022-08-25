@@ -45,9 +45,9 @@ function App() {
           <Outlet />
           <Logger />
         </LoggerContextProvider>
-        <ReactLocationDevtools initialIsOpen={false} />
+        <ReactLocationDevtools initialIsOpen={true} />
+        <ReactQueryDevtools initialIsOpen={true} />
       </Router>
-      <ReactQueryDevtools />
     </QueryClientProvider>
   )
 }

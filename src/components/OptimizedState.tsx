@@ -5,7 +5,7 @@ import complexCalculation from 'utils/complex-calculation'
 
 const OptimizedState = () => {
   const [calculation, setCalculation] = useState(() =>
-    complexCalculation(1000000)
+    complexCalculation('OptimizedState', 1000000)
   )
 
   useEffect(() => {

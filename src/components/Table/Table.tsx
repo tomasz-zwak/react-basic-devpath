@@ -59,15 +59,6 @@ const TablePaginationControls: React.FC<{
     return sizes
   }, [])
 
-  const changePageSize = (pageSize: number) => {
-    dispatchPaginationStateChange({ type: 'pageSize', payload: pageSize })
-  }
-
-  const changePage = (page: number) => {
-    if (page >= 1)
-      dispatchPaginationStateChange({ type: 'page', payload: page })
-  }
-
   return (
     <Flex>
       <label style={{ marginRight: '5px' }} htmlFor="size">
@@ -78,7 +69,12 @@ const TablePaginationControls: React.FC<{
         style={{ margin: '1rem' }}
         name="size"
         id={`table-size-select${id}`}
-        onChange={(e) => changePageSize(parseInt(e.target.value))}
+        onChange={(e) =>
+          dispatchPaginationStateChange({
+            type: 'pageSize',
+            payload: parseInt(e.target.value),
+          })
+        }
       >
         {tableSizeOptions.map((size) => (
           <option key={`table-size-select-option-${size}`} value={size}>
@@ -86,11 +82,27 @@ const TablePaginationControls: React.FC<{
           </option>
         ))}
       </select>
-      <button onClick={() => changePage(paginationState.page - 1)}>
+      <button
+        onClick={() =>
+          dispatchPaginationStateChange({
+            type: 'page',
+            payload: paginationState.page - 1,
+          })
+        }
+      >
         Previous
       </button>
       {paginationState.page}
-      <button onClick={() => changePage(paginationState.page + 1)}>Next</button>
+      <button
+        onClick={() =>
+          dispatchPaginationStateChange({
+            type: 'page',
+            payload: paginationState.page + 1,
+          })
+        }
+      >
+        Next
+      </button>
     </Flex>
   )
 }
