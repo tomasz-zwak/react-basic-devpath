@@ -7,8 +7,7 @@ const Spinner = ({ size }: { size: 'small' | 'medium' | 'large' }) => {
   return (
     <div
       role={'progressbar'}
-      className={classNames({
-        loader: true,
+      className={classNames('loader', {
         '-small': size === 'small',
         '-medium': size === 'medium',
         '-large': size === 'large',

@@ -32,7 +32,7 @@ const Users = () => {
 
   const { mutate: deleteUser } = useUserDelete()
 
-  const queryCache = useQueryClient()
+  const queryClient = useQueryClient()
 
   const handleReset = () => {
     setSelectedUser(undefined)
@@ -58,7 +58,7 @@ const Users = () => {
               <button
                 onClick={() =>
                   deleteUser(id, {
-                    onSuccess: () => queryCache.invalidateQueries(['users']),
+                    onSuccess: () => queryClient.invalidateQueries(['users']),
                   })
                 }
               >

@@ -172,7 +172,7 @@ const Table = <T extends Record<any, any>>({
           <tr>
             {selectable && <th />}
             {columns.map(({ title }) => (
-              <th key={`table-header-cell-${title}`}>{title}</th>
+              <th key={title}>{title}</th>
             ))}
           </tr>
         </thead>
@@ -209,7 +209,7 @@ const Table = <T extends Record<any, any>>({
               )}
               {columns.map((col, index) => (
                 <TableCell
-                  info={col.info ? dataRow[col.info] : null}
+                  info={col.info && dataRow[col.info]}
                   key={`table-cell-${index}`}
                 >
                   {col.render ? col.render(dataRow) : dataRow[col.key]}
@@ -256,8 +256,8 @@ const TableCell = ({ info, children }) => {
       onBlur={() =>
         setShowInfo((showInfo) => ({ ...showInfo, visible: false }))
       }
-      onMouseEnter={() => toggleIcon()}
-      onMouseLeave={() => toggleIcon()}
+      onMouseEnter={toggleIcon}
+      onMouseLeave={toggleIcon}
     >
       {children}
       {info && showInfo.visible && (
