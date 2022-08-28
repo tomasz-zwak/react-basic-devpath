@@ -19,6 +19,7 @@ const StaleClosure = () => {
       const intervalId = setInterval(() => logCount(count), 1000)
       return () => clearInterval(intervalId)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fixed])
 
   useEffect(() => {
@@ -28,6 +29,7 @@ const StaleClosure = () => {
         clearInterval(intervalId)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [count, fixed])
 
   return (

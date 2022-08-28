@@ -1,6 +1,5 @@
 import './Table.scss'
 
-import Spinner from 'components/spinner'
 import { Flex } from 'layouts/Flex'
 import React, { useEffect, useId, useMemo, useReducer, useState } from 'react'
 import { createPortal } from 'react-dom'
@@ -76,7 +75,7 @@ const TablePaginationControls: React.FC<{
         }
       >
         {tableSizeOptions.map((size) => (
-          <option key={`table-size-select-option-${size}`} value={size}>
+          <option key={size} value={size}>
             {size}
           </option>
         ))}
@@ -126,6 +125,7 @@ interface TableProps<T> {
   selectable?: TableSelectableProps<T>
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const tableSelectionReducer = <T extends Record<any, any>>(
   state: T[],
   {
@@ -148,7 +148,6 @@ const tableSelectionReducer = <T extends Record<any, any>>(
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Table = <T extends Record<any, any>>({
   data,
-  loading,
   columns,
   rowId = 'id',
   pagination,
@@ -165,19 +164,18 @@ const Table = <T extends Record<any, any>>({
 
   return (
     <>
-      {loading && <Spinner size="medium" />}
       <table>
         <thead>
           <tr>
             {selectable && <th />}
-            {columns.map(({ title }) => (
-              <th key={title}>{title}</th>
+            {columns.map(({ title }, index) => (
+              <th key={index}>{title}</th>
             ))}
           </tr>
         </thead>
         <tbody>
           {data.map((dataRow) => (
-            <tr key={`table-row-${dataRow[rowId]}`}>
+            <tr key={dataRow[rowId]}>
               {selectable && (
                 <td>
                   <input
@@ -207,10 +205,7 @@ const Table = <T extends Record<any, any>>({
                 </td>
               )}
               {columns.map((col, index) => (
-                <TableCell
-                  info={col.info && dataRow[col.info]}
-                  key={`table-cell-${index}`}
-                >
+                <TableCell info={col.info && dataRow[col.info]} key={index}>
                   {col.render ? col.render(dataRow) : dataRow[col.key]}
                 </TableCell>
               ))}
