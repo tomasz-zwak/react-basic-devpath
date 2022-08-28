@@ -1,6 +1,5 @@
 import './Logger.scss'
 
-import classNames from 'classnames'
 import Checkbox from 'components/Checkbox'
 import { LoggerContext, LoggerMessage } from 'components/Logger/LoggerContext'
 import React, { useContext, useEffect, useRef } from 'react'
@@ -42,7 +41,7 @@ const Logger = () => {
           <div
             style={{ backgroundColor: 'darkgreen' }}
             ref={ref}
-            className={classNames({ logger: true })}
+            className={'logger'}
           >
             {messages.map((msg) => (
               <LoggerMsg key={msg.date.getTime()} message={msg} />

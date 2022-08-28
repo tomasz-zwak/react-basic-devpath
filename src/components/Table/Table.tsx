@@ -1,6 +1,5 @@
 import './Table.scss'
 
-import classNames from 'classnames'
 import Spinner from 'components/spinner'
 import { Flex } from 'layouts/Flex'
 import React, { useEffect, useId, useMemo, useReducer, useState } from 'react'
@@ -226,12 +225,7 @@ const Table = <T extends Record<any, any>>({
 
 const TableInfo = ({ content, top, left }) => {
   return createPortal(
-    <div
-      style={{ top, left }}
-      className={classNames({
-        'table--info-popup': true,
-      })}
-    >
+    <div style={{ top, left }} className={'table--info-popup'}>
       {content}
     </div>,
     document.body

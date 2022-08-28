@@ -4,47 +4,69 @@ import MemoExample from 'components/MemoExample'
 import OptimizedState from 'components/OptimizedState'
 import RedirectEffect from 'components/RedirectEffect'
 import StaleClosure from 'components/StaleClosure'
-import { DEFAULT_EXAMPLE_STATE } from 'constants/default-example-state'
 import { Flex } from 'layouts/Flex'
-import React, { useState } from 'react'
+import React, { useReducer } from 'react'
+
+const initialState: ExamplesVisibilityState = {
+  memoExample: false,
+  optimizedState: false,
+  redirectEffect: false,
+  staleClosure: false,
+}
+
+interface ExamplesVisibilityState {
+  staleClosure: boolean
+  optimizedState: boolean
+  memoExample: boolean
+  redirectEffect: boolean
+}
+
+const examplesVisibilityReducer = (
+  state: ExamplesVisibilityState,
+  toggleExample: keyof ExamplesVisibilityState
+) => {
+  switch (toggleExample) {
+    case 'memoExample':
+      return { ...initialState, memoExample: true }
+    case 'optimizedState':
+      return { ...initialState, optimizedState: true }
+    case 'redirectEffect':
+      return { ...initialState, redirectEffect: true }
+    case 'staleClosure':
+      return { ...initialState, staleClosure: true }
+    default:
+      return state
+  }
+}
 
 const Examples = () => {
-  const [isStaleClosureEnabled, setStaleClosureEnabled] = useState(
-    DEFAULT_EXAMPLE_STATE
-  )
-  const [isOptimizedStateEnabled, setOptimizedStateEnabled] = useState(
-    DEFAULT_EXAMPLE_STATE
-  )
-  const [isMemoExampleEnabled, setMemoExampleEnabled] = useState(
-    DEFAULT_EXAMPLE_STATE
-  )
-
-  const [isRedirectEffectEnabled, setRedirectEffectEnabled] = useState(
-    DEFAULT_EXAMPLE_STATE
-  )
+  const [
+    { memoExample, optimizedState, redirectEffect, staleClosure },
+    dispatch,
+  ] = useReducer(examplesVisibilityReducer, initialState)
 
   return (
     <>
       <Flex direction="column" style={{ alignItems: 'flex-start' }}>
         <Checkbox
+          checked={staleClosure}
           label="Stale Closure"
-          onChecked={() => setStaleClosureEnabled(true)}
-          onUnchecked={() => setStaleClosureEnabled(false)}
+          onChecked={() => dispatch('staleClosure')}
         />
         <Checkbox
+          checked={optimizedState}
           label="Optimized State"
-          onChecked={() => setOptimizedStateEnabled(true)}
-          onUnchecked={() => setOptimizedStateEnabled(false)}
+          onChecked={() => dispatch('optimizedState')}
         />
         <Checkbox
+          checked={memoExample}
           label="Memo Example"
-          onChecked={() => setMemoExampleEnabled(true)}
-          onUnchecked={() => setMemoExampleEnabled(false)}
+          onChecked={() => dispatch('memoExample')}
         />
         <Checkbox
+          checked={redirectEffect}
           label="Redirect effect"
-          onChecked={() => setRedirectEffectEnabled(true)}
-          onUnchecked={() => setRedirectEffectEnabled(false)}
+          onChecked={() => dispatch('redirectEffect')}
         />
       </Flex>
       <hr />
@@ -55,28 +77,28 @@ const Examples = () => {
           justifyContent: 'flex-start',
         }}
       >
-        {isStaleClosureEnabled && (
+        {staleClosure && (
           <>
             <StaleClosure />
             <Divider />
           </>
         )}
 
-        {isOptimizedStateEnabled && (
+        {optimizedState && (
           <>
             <OptimizedState />
             <Divider />
           </>
         )}
 
-        {isMemoExampleEnabled && (
+        {memoExample && (
           <>
             <MemoExample />
             <Divider />
           </>
         )}
 
-        {isRedirectEffectEnabled && (
+        {redirectEffect && (
           <>
             <RedirectEffect />
             <Divider />
