@@ -20,7 +20,7 @@ const Checkbox: React.FC<Props> = ({
   const id = useId()
   const checkboxHandler = useCheckboxHandler()
   return (
-    <>
+    <div>
       <label htmlFor={id}>{label}</label>
       <input
         {...props}
@@ -29,7 +29,7 @@ const Checkbox: React.FC<Props> = ({
         name={label}
         id={id}
       />
-    </>
+    </div>
   )
 }
 
