@@ -167,11 +167,11 @@ const UserForm: React.FC<Props> = ({ user, onReset }) => {
           return (
             <Form>
               <Flex
+                direction="column"
                 style={{
                   border: '1px solid black',
                   margin: 5,
                   padding: 5,
-                  flexDirection: 'column',
                   alignItems: 'flex-start',
                   width: 'fit-content',
                   color: 'gray',

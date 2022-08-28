@@ -25,7 +25,7 @@ const Examples = () => {
 
   return (
     <>
-      <Flex style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+      <Flex direction="column" style={{ alignItems: 'flex-start' }}>
         <Checkbox
           label="Stale Closure"
           onChecked={() => setStaleClosureEnabled(true)}
