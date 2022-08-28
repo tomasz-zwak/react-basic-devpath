@@ -1,16 +1,17 @@
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from 'App'
 import React from 'react'
+import { renderWithProviders } from 'test/utils'
 
 describe('App router', () => {
   test('displays home page', async () => {
-    render(<App />)
+    renderWithProviders(<App />)
     expect(await screen.findByText('Welcome to home page')).toBeInTheDocument()
   })
 
   test('displays examples page', async () => {
-    render(<App />)
+    renderWithProviders(<App />)
     userEvent.click(screen.getByRole('link', { name: /examples/i }))
 
     expect(

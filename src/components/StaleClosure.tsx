@@ -4,14 +4,14 @@ import React, { useEffect, useState } from 'react'
 
 const StaleClosure = () => {
   const [count, setCount] = useState(0)
+  const { log } = useLogger(StaleClosure.name)
 
   const [fixed, setFixed] = useState(false)
-
-  const { log } = useLogger(StaleClosure.name)
 
   const logCount = (count: number) => {
     console.log(`Current count is: ${count}`)
     log(`Current count is: ${count}`)
+    // log(`Current count is: ${count}`)
   }
 
   useEffect(() => {
@@ -37,11 +37,11 @@ const StaleClosure = () => {
         label="Fixed"
         onChecked={() => {
           setFixed(true)
-          log('Enabled fixed stale closure')
+          // log('Enabled fixed stale closure')
         }}
         onUnchecked={() => {
           setFixed(false)
-          log('Disabled fixed stale closure')
+          // log('Disabled fixed stale closure')
         }}
       />
       <button

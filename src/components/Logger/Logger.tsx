@@ -2,18 +2,40 @@ import './Logger.scss'
 
 import classNames from 'classnames'
 import Checkbox from 'components/Checkbox'
-import { LoggerContext, LoggerMessage } from 'components/Logger/LoggerContext'
-import React, { useContext, useEffect, useRef } from 'react'
+import {
+  loggerSummary,
+  logsCurrentDay,
+  logsCurrentMinute,
+  logsCurrentSecond,
+} from 'components/Logger/loggerSelector'
+import { LoggerMessage, selectMessages } from 'components/Logger/loggerSlice'
+import useLogger from 'hooks/use-logger'
+import { Flex } from 'layouts/Flex'
+import React, { useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
+import { useAppSelector } from 'redux/hooks'
 
 const Logger = () => {
-  const { messages, setVisible, isVisible } = useContext(LoggerContext)
+  const { isVisible } = useAppSelector((state) => state.logger)
+  const state = useAppSelector((state) => state)
+  const messages = selectMessages(state)
+  const { setVisible, clear } = useLogger()
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (ref.current?.lastElementChild)
-      ref.current.lastElementChild.scrollIntoView({ behavior: 'smooth' })
+    ref.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
+
+  const printLoggerSummary = () => {
+    console.log('Logs today: ')
+    console.table(logsCurrentDay(state))
+    console.log('Logs this minute: ')
+    console.table(logsCurrentMinute(state))
+    console.log('Logs this second: ')
+    console.table(logsCurrentSecond(state))
+    console.log('Summary: ')
+    console.table(loggerSummary(state))
+  }
 
   return (
     <>
@@ -28,18 +50,27 @@ const Logger = () => {
             width: 'auto',
           }}
         >
-          <Checkbox
-            checked={isVisible}
-            label="Show logger"
-            onChecked={() => setVisible(true)}
-            onUnchecked={() => setVisible(false)}
-          />
+          <Flex direction="column">
+            <Checkbox
+              checked={isVisible}
+              label="Show logger"
+              onChecked={() => setVisible(true)}
+              onUnchecked={() => setVisible(false)}
+            />
+            <button type="button" onClick={clear}>
+              clear
+            </button>
+            <button type="button" onClick={printLoggerSummary}>
+              Print Summary
+            </button>
+          </Flex>
         </div>,
         document.body
       )}
       {isVisible &&
         createPortal(
           <div
+            data-testid="logger"
             style={{ backgroundColor: 'darkgreen' }}
             ref={ref}
             className={classNames({ logger: true })}

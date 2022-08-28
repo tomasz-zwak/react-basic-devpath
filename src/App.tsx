@@ -1,11 +1,9 @@
 import './App.scss'
 
 import { Link, Outlet, ReactLocation, Router } from '@tanstack/react-location'
-import { ReactLocationDevtools } from '@tanstack/react-location-devtools'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import Logger from 'components/Logger/Logger'
-import LoggerContextProvider from 'components/Logger/LoggerContext'
 import React from 'react'
 import { routes } from 'routes'
 
@@ -43,13 +41,10 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Router location={location} routes={routes}>
-        <LoggerContextProvider>
-          <Header />
-          <Outlet />
-          <Logger />
-        </LoggerContextProvider>
-        <ReactLocationDevtools initialIsOpen={true} />
-        <ReactQueryDevtools initialIsOpen={true} />
+        <Header />
+        <Outlet />
+        <Logger />
+        <ReactQueryDevtools />
       </Router>
     </QueryClientProvider>
   )
