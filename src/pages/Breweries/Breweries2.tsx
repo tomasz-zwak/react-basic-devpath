@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import Spinner from 'components/spinner'
 import Table from 'components/Table'
 import React from 'react'
-import useBreweries from 'services/BreweryService'
+import { useBreweries } from 'services/BreweryService/breweries.hooks'
 
 const Breweries2 = () => {
   const { isLoading, error, data } = useBreweries(0, 10)
