@@ -66,7 +66,7 @@ const TablePaginationControls: React.FC<{
         value={paginationState.pageSize}
         style={{ margin: '1rem' }}
         name="size"
-        id={`table-size-select${id}`}
+        id={id}
         onChange={(e) =>
           dispatchPaginationStateChange({
             type: 'pageSize',

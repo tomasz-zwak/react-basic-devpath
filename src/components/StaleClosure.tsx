@@ -36,6 +36,7 @@ const StaleClosure = () => {
     <div data-testid="staleClosureContainer">
       <p>Stale Closure</p>
       <Checkbox
+        checked={fixed}
         label="Fixed"
         onChecked={() => {
           setFixed(true)
