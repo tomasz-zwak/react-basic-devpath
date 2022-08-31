@@ -2,6 +2,7 @@ import './Users.scss'
 
 import { useQueryClient } from '@tanstack/react-query'
 import classNames from 'classnames'
+import { LinkButton } from 'components/LinkButton'
 import Spinner from 'components/spinner'
 import Table from 'components/Table'
 import {
@@ -27,7 +28,7 @@ import { User } from 'services/UserService/user.type'
 import * as Yup from 'yup'
 
 const Users = () => {
-  const { data, isLoading, error } = useUsers()
+  const { data, isLoading, error, failureCount } = useUsers()
   const [selectedUser, setSelectedUser] = useState<User>()
 
   const { mutate: deleteUser } = useUserDelete()
@@ -38,7 +39,13 @@ const Users = () => {
     setSelectedUser(undefined)
   }
 
-  if (isLoading) return <Spinner size="small" />
+  if (isLoading)
+    return (
+      <>
+        <p>{`Retries ${failureCount}`}</p>
+        <Spinner size="small" />
+      </>
+    )
 
   if (!data || error)
     return <p className={classNames({ error })}>{JSON.stringify(error)}</p>
@@ -53,12 +60,15 @@ const Users = () => {
         columns={[
           {
             key: 'id',
-            title: 'ID',
+            title: '',
             render: ({ id }) => (
               <button
                 onClick={() =>
                   deleteUser(id, {
-                    onSuccess: () => queryClient.invalidateQueries(['users']),
+                    onSuccess: () => {
+                      queryClient.invalidateQueries(['users'])
+                      handleReset()
+                    },
                   })
                 }
               >
@@ -70,7 +80,9 @@ const Users = () => {
             key: 'name',
             title: 'Name',
             render: (user) => (
-              <button onClick={() => setSelectedUser(user)}>{user.name}</button>
+              <LinkButton onClick={() => setSelectedUser(user)}>
+                {user.name}
+              </LinkButton>
             ),
           },
           { key: 'age', title: 'Age' },

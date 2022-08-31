@@ -9,7 +9,7 @@ import {
 } from 'services/UserService/user.service'
 import { User } from 'services/UserService/user.type'
 
-const useUsers = () => useQuery(['users'], () => users())
+const useUsers = () => useQuery(['users'], () => users(), { retry: 2 })
 
 const useUser = (id: User['id']) => useQuery(['user', id], () => user(id))
 
