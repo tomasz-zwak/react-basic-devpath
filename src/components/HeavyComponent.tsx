@@ -16,7 +16,11 @@ const HeavyComponent = ({ onClick }: { onClick: () => void }) => {
   }
 
   return (
-    <Flex direction="column" style={{ border: '1px solid red' }}>
+    <Flex
+      direction="column"
+      style={{ border: '1px solid red', margin: 5, padding: 5 }}
+    >
+      <strong>HeavyComponent</strong>
       <div>Component dependent on function, process result:</div>
       {processComplexCalc().substring(0, 10)}
       <button type="button" onClick={onClick}>
