@@ -37,7 +37,7 @@ describe('Examples page', () => {
     })
 
     describe('when stale closure fixed chackbox is checked', () => {
-      test('should log incremented counter value every second', () => {
+      test('should log incremented counter value every second', async () => {
         render(<Examples />)
 
         userEvent.click(
@@ -45,6 +45,10 @@ describe('Examples page', () => {
         )
 
         userEvent.click(screen.getByRole('checkbox', { name: /fixed/i }))
+
+        expect(
+          await screen.findByRole('checkbox', { name: /fixed/i })
+        ).toBeChecked()
 
         userEvent.click(screen.getByRole('button', { name: /counter: 0/i }))
 
