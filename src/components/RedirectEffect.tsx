@@ -1,5 +1,5 @@
 import { useNavigate } from '@tanstack/react-location'
-import useLogger from 'hooks/use-logger'
+import useLogger from 'components/Logger/use-logger'
 import React from 'react'
 import { routes } from 'routes'
 import randomNumber from 'utils/random-number'

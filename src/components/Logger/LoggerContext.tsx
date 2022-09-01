@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useLocalStorage } from 'react-use'
 
 export interface LoggerMessage {
   context: string
@@ -11,7 +12,7 @@ export type LoggerMessageInput = Omit<LoggerMessage, 'date'>
 interface LoggerContextParams {
   messages: LoggerMessage[]
   addMessage: (message: LoggerMessageInput) => void
-  isVisible: boolean
+  isVisible?: boolean
   setVisible: (isVisible: boolean) => void
   clear: () => void
 }
@@ -19,17 +20,15 @@ interface LoggerContextParams {
 export const LoggerContext = React.createContext<LoggerContextParams>(
   {} as LoggerContextParams
 )
-const LOGGER_KEY = 'isLoggerVisible'
 
 const LoggerContextProvider = ({ children }) => {
-  const [isVisible, setVisible] = useState(
-    () => localStorage.getItem(LOGGER_KEY) === 'true'
-  )
   const [messages, setMessages] = useState<LoggerMessage[]>([])
 
+  const [isVisible, setVisible] = useLocalStorage('isLoggerVisible', false)
+
   useEffect(() => {
-    if (isVisible) localStorage.setItem('isLoggerVisible', 'true')
-    if (!isVisible) localStorage.setItem('isLoggerVisible', 'false')
+    if (isVisible) setVisible(true)
+    if (!isVisible) setVisible(false)
   }, [isVisible])
 
   const addMessage: LoggerContextParams['addMessage'] = (message) => {

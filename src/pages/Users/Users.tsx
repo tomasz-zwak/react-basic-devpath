@@ -1,8 +1,11 @@
+/* eslint-disable max-lines */
 import './Users.scss'
 
+import { Link, Outlet } from '@tanstack/react-location'
 import { useQueryClient } from '@tanstack/react-query'
 import classNames from 'classnames'
 import { LinkButton } from 'components/LinkButton'
+import LoadingIndicator from 'components/LoadingIndicator'
 import Spinner from 'components/spinner'
 import Table from 'components/Table'
 import {
@@ -16,7 +19,6 @@ import {
 } from 'formik'
 import { Flex } from 'layouts/Flex'
 import React, { useEffect, useRef, useState } from 'react'
-import { createPortal } from 'react-dom'
 import { UserCreateDto } from 'services/UserService/user.dto'
 import {
   useUserCreate,
@@ -37,6 +39,7 @@ const Users = () => {
 
   const handleReset = () => {
     setSelectedUser(undefined)
+    queryClient.invalidateQueries(['users'])
   }
 
   if (isLoading)
@@ -49,8 +52,6 @@ const Users = () => {
 
   if (!data || error)
     return <p className={classNames({ error })}>{JSON.stringify(error)}</p>
-
-  console.log(data)
 
   return (
     <>
@@ -72,7 +73,7 @@ const Users = () => {
                   })
                 }
               >
-                Delete
+                {`Delete - ${id}`}
               </button>
             ),
           },
@@ -81,7 +82,7 @@ const Users = () => {
             title: 'Name',
             render: (user) => (
               <LinkButton onClick={() => setSelectedUser(user)}>
-                {user.name}
+                <Link to={user.id}>{user.name}</Link>
               </LinkButton>
             ),
           },
@@ -103,54 +104,57 @@ const Users = () => {
           },
         ]}
       />
-      <UserForm user={selectedUser} onReset={handleReset} />
+      <Flex style={{ justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+        <UserForm
+          user={selectedUser}
+          key={selectedUser?.id}
+          onSuccess={handleReset}
+        />
+        <Outlet />
+      </Flex>
     </>
   )
 }
 
 interface Props {
   user?: User
-  onReset: () => void
+  onSuccess: () => void
+  key: any
 }
 
-const UserForm: React.FC<Props> = ({ user, onReset }) => {
+const UserForm: React.FC<Props> = ({ user, onSuccess }) => {
   const { mutate: createUser, isLoading: creating } = useUserCreate()
   const { mutate: updateUser, isLoading: updating } = useUserUpdate()
 
-  const queryCache = useQueryClient()
+  const queryClient = useQueryClient()
 
   const formikRef = useRef<FormikProps<FormikValues>>(null)
 
   useEffect(() => {
-    if (user) formikRef.current?.setValues(user)
-    if (!user) formikRef.current?.resetForm()
-  }, [user])
+    console.log('rendered', user)
+  })
 
-  const initialValues = { name: '', age: '', email: '', photos: [] }
+  const initialValues = user || { name: '', age: '', email: '', photos: [] }
 
-  const handleSuccess = () => {
-    queryCache.invalidateQueries(['users'])
-    onReset()
-    formikRef.current?.resetForm({
-      values: initialValues,
-    })
+  const handleSuccess = (userId?: User['id']) => {
+    onSuccess()
+    if (userId) queryClient.invalidateQueries(['user', userId])
+    formikRef.current?.resetForm()
   }
 
   return (
-    <>
+    <React.Fragment>
       <Formik
         innerRef={formikRef}
         initialValues={initialValues}
         validationSchema={Yup.object().shape({
-          name: user
-            ? Yup.string().optional()
-            : Yup.string().required('Required'),
-          age: user
-            ? Yup.number().min(1).max(100).optional()
-            : Yup.number().min(1).max(100).required('Required'),
-          email: user
-            ? Yup.string().email().optional()
-            : Yup.string().email().required('Required'),
+          name: Yup.string().required('Required'),
+          age: Yup.number()
+            .typeError('Must be a number')
+            .min(1)
+            .max(100)
+            .required('Required'),
+          email: Yup.string().email().required('Required'),
           photos: Yup.array()
             .of(
               Yup.object().shape({
@@ -165,12 +169,12 @@ const UserForm: React.FC<Props> = ({ user, onReset }) => {
         onSubmit={(values) => {
           if (!user)
             return createUser(values as UserCreateDto, {
-              onSuccess: handleSuccess,
+              onSuccess: () => handleSuccess(),
             })
           updateUser(
             { id: user.id, ...values },
             {
-              onSuccess: handleSuccess,
+              onSuccess: () => handleSuccess(user.id),
             }
           )
         }}
@@ -270,7 +274,7 @@ const UserForm: React.FC<Props> = ({ user, onReset }) => {
         }}
       </Formik>
       <LoadingIndicator visible={creating || updating} />
-    </>
+    </React.Fragment>
   )
 }
 
@@ -286,15 +290,5 @@ const ErrorMessage = ({ name }) => (
     }}
   />
 )
-
-const LoadingIndicator = ({ visible }) => {
-  if (!visible) return null
-  return createPortal(
-    <div style={{ position: 'fixed', top: 5, right: 5 }}>
-      <Spinner size="small" />
-    </div>,
-    document.body
-  )
-}
 
 export default Users

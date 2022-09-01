@@ -7,9 +7,14 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import Logger from 'components/Logger/Logger'
 import LoggerContextProvider from 'components/Logger/LoggerContext'
 import React from 'react'
+import { useFavicon, useTitle } from 'react-use'
 import { routes } from 'routes'
 
 const Header = () => {
+  useTitle('React Basic Katas')
+  useFavicon(
+    'https://icons.iconarchive.com/icons/hopstarter/sleek-xp-basic/256/Lamp-icon.png'
+  )
   return (
     <nav>
       <ul>

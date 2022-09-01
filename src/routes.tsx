@@ -6,6 +6,7 @@ import CoalStocks from 'pages/CoalStock/CoalStock'
 import Examples from 'pages/Examples'
 import Home from 'pages/Home'
 import Users from 'pages/Users'
+import UserInfo from 'pages/Users/User'
 import React from 'react'
 
 export const routes: Route[] = [
@@ -38,5 +39,11 @@ export const routes: Route[] = [
   {
     path: 'users',
     element: <Users />,
+    children: [
+      {
+        path: ':userId',
+        element: <UserInfo />,
+      },
+    ],
   },
 ]

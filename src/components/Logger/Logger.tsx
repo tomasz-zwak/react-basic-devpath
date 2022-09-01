@@ -2,15 +2,13 @@ import './Logger.scss'
 
 import Checkbox from 'components/Checkbox'
 import { LoggerMessage } from 'components/Logger/LoggerContext'
-import useLogger from 'hooks/use-logger'
-import useCounter from 'hooks/use-timer'
+import useLogger from 'components/Logger/use-logger'
 import { Flex } from 'layouts/Flex'
 import React, { useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 
 const Logger = () => {
   const { log, messages, setVisible, isVisible } = useLogger(Logger.name)
-  const counter = useCounter(100)
 
   const ref = useRef<HTMLDivElement>(null)
 
@@ -39,9 +37,6 @@ const Logger = () => {
             onChecked={() => setVisible(true)}
             onUnchecked={() => setVisible(false)}
           />
-          <button onClick={() => log(`Counter hook value: ${counter}`)}>
-            Log Counter hook value
-          </button>
         </Flex>,
         document.body
       )}

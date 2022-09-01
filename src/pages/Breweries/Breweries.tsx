@@ -14,7 +14,7 @@ const Breweries = () => {
 
   const queryClient = useQueryClient()
 
-  const { isLoading, error, data } = useBreweries(page, pageSize, {
+  const { isLoading, error, data, isFetching } = useBreweries(page, pageSize, {
     onSuccess: (breweries) => {
       breweries.forEach((brewery) =>
         queryClient.setQueryData(['brewery', brewery.id], brewery)
@@ -31,7 +31,7 @@ const Breweries = () => {
     <>
       <Table
         data={data}
-        loading={isLoading}
+        loading={isFetching}
         selectable={{ onSelect: (selectedRows) => console.log(selectedRows) }}
         pagination={{
           paginationValues: {

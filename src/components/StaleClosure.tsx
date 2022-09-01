@@ -1,5 +1,5 @@
 import Checkbox from 'components/Checkbox'
-import useLogger from 'hooks/use-logger'
+import useLogger from 'components/Logger/use-logger'
 import React, { useEffect, useState } from 'react'
 
 const StaleClosure = () => {

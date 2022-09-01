@@ -1,11 +1,3 @@
 {
-  "users": [
-    {
-      "name": "Tomasz Żwak",
-      "age": "32",
-      "email": "t.zwak+2@selleo.com",
-      "photos": [],
-      "id": 1
-    }
-  ]
+  "users": []
 }

@@ -1,5 +1,6 @@
 import './Table.scss'
 
+import classNames from 'classnames'
 import { Flex } from 'layouts/Flex'
 import React, { useEffect, useId, useMemo, useReducer, useState } from 'react'
 import { createPortal } from 'react-dom'
@@ -81,12 +82,13 @@ const TablePaginationControls: React.FC<{
         ))}
       </select>
       <button
-        onClick={() =>
-          dispatchPaginationStateChange({
-            type: 'page',
-            payload: paginationState.page - 1,
-          })
-        }
+        onClick={() => {
+          if (paginationState.page > 1)
+            dispatchPaginationStateChange({
+              type: 'page',
+              payload: paginationState.page - 1,
+            })
+        }}
       >
         Previous
       </button>
@@ -152,6 +154,7 @@ const Table = <T extends Record<any, any>>({
   rowId = 'id',
   pagination,
   selectable,
+  loading,
 }: TableProps<T>) => {
   const [selectedRows, dispatchSelectionChange] = useReducer(
     tableSelectionReducer,
@@ -164,7 +167,7 @@ const Table = <T extends Record<any, any>>({
 
   return (
     <>
-      <table>
+      <table className={classNames({ 'table--loading': loading })}>
         <thead>
           <tr>
             {selectable && <th />}
